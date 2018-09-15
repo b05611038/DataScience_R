@@ -13,6 +13,6 @@
 
 - 各禮拜連結：
 
-| Date   | W    | Link                                                           |
-| --:    | --   | --                                                             |
-| 09/20  |  1   | https://github.com/b05611038/DataScience_R/tree/master/week_1  |
+| Date   | Week    | Link                                                           |
+| --:    | --      | --                                                             |
+| 09/20  |    1    | https://github.com/b05611038/DataScience_R/tree/master/week_1  |
