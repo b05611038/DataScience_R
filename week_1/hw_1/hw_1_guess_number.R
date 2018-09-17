@@ -30,32 +30,28 @@ while (TRUE) {
     break
   }
 
-  meet.A <- 0
-  meet.B <- 0
-  meet.check <- 0
+  meet.A <- c(0, 0, 0, 0)
+  meet.B <- c(0, 0, 0, 0)
+  for (x in c(1: 4)) {
+    if (input.digit[x] == answer.digit[x]) {
+      meet.A[x] <- meet.A[x] + 1
+    }
+  }
+
   for (x in c(1 : 4)) {
     for (y in c(1 : 4)) {
-      if (x == y && input.digit[x] == answer.digit[y]) {
-        if (meet.check != 0) {
-          meet.B <- meet.B - meet.check
-          meet.check <- 0
-        }
-
-        meet.A <- meet.A + 1
-        break
-
-      } else if (x != y && input.digit[x] == answer.digit[y]) {
-        meet.B <- meet.B + 1
-        meet.check <- meet.check + 1
+      if (input.digit[x] == answer.digit[y] && meet.A[y] == 0) {
+        meet.B[x] <- meet.B[x] + 1
       }
-    } 
-
-    if (meet.check >= 2) {
-      meet.B <- meet.B - (meet.check - 1)
     }
-    meet.check <- 0
+    if (meet.B[x] >= 1 && meet.A[x] == 0) {
+      meet.B[x] <- 1
+    }
+    else if (meet.B[x] >= 1 && meet.A[x] != 0) {
+      meet.B[x] <- 0
+    }
   }
-  cat("這次結果是 ", meet.A, "A", meet.B, "B\n")
+  cat("這次結果是 ", sum(meet.A), "A", sum(meet.B), "B\n")
   count <- count + 1
 }
 
