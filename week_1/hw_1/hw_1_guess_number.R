@@ -18,6 +18,11 @@ count <- 0
 while (TRUE) {
   input <- readline(prompt = "請輸入猜測的數字：")
   input <- as.numeric(input)
+  
+  if (input < 1000 || input > 9999) {
+    cat("請輸入正確可判讀的四位數字")
+    next
+  }
 
   input.digit <- c(0, 0, 0, 0)
 
