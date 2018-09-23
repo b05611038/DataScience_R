@@ -1,0 +1,88 @@
+---
+title: "LTNsportsCrawler"
+author: "B05611038"
+date: "2018/9/23"
+output: html_document
+---
+
+## Theme: Web Crawler
+
+### Web Crawler of LTN website
+
+---
+
+## Target Website: LTN sports
+
+```
+http://sports.ltn.com.tw/
+```
+---
+
+## Thought of web crawler
+```
+Method:
+     My goal is grabbing the each news title in the LTN sports. It's a piece of cake because the website is formatted in html. Therefore, we only need simple R package and type some command. Then we can complete this work.
+```
+
+---
+
+## Process of web crawler
+```
+● Input Necessary Packages : 
+```
+```{package_import, echo=TRUE, eval=FALSE}
+library(rvest)     # for web crawler
+```
+```
+● Set target URL : 
+```
+```{set_url, echo=TRUE, eval=FALSE}
+URL <- c("http://sports.ltn.com.tw/baseball",
+         "http://sports.ltn.com.tw/basketball",
+         "http://sports.ltn.com.tw/athletics",
+         "http://sports.ltn.com.tw/tennis",
+         "http://sports.ltn.com.tw/football",
+         "http://sports.ltn.com.tw/leisure",
+         "http://sports.ltn.com.tw/gaming",
+         "http://sports.ltn.com.tw/interview")
+```
+```
+● Set data.frame index name
+```
+```{set_title_name, echo=TRUE, eval=FALSE}
+title <- c(1: 10)
+title.name <- c("numbers", "baseball", "basketball", "athletics", "tennis", "football", "leisure", "gaming", "interview")
+```
+```
+● Using for loop to get the title in subpage
+```
+```{for_loop, echo=TRUE, eval=FALSE}
+for (x in c(1: 8)) {
+  title.temp <- read_html(URL[x])
+
+  title.temp <- html_nodes(title.temp, ".list_title")
+
+  title.temp <- html_text(title.temp)
+
+  title.temp <- title.temp[c(1: 10)]
+
+  title <- rbind(title, title.temp)
+}
+```
+```
+● Let the data become the dataframe format and save the data
+```
+```{dataframe, echo=TRUE, eval=FALSE}
+title <- as.data.frame(title)
+
+rownames(title) <- title.name
+
+save(title, file='Sport_news_title.RData')
+```
+---
+
+## Reflection
+```
+     This is my first time doing web crawler. I only knew that it is a method to catch the data from websites before this course. Because of my tight schedule, it is hard to learn things which is not benefit to my study. After finished the homework of the course, I learned some basic idea of web crawler.
+     Web crawler is not a simple work, the statement "peace of cake" is only when the website with pure format of html. Javascript format needs more R package to analysis data downloaded from websites, and I do not try in this work.
+```
