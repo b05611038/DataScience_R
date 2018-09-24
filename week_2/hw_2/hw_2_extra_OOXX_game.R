@@ -1,66 +1,135 @@
-########################################################### 
-# 加分作業：
-# 當要完成的目標變複雜後，學習如何將複雜的問題拆解成一個一個小問題來解決
-# 練習 R function 的使用
+print_status <- function(status) {
+  #the print function of the game
+  for (x in 1: 3) {
+    for (y in 1 : 3) {
+      if (status[x, y] == -1) {
+        cat("X")
+      } else if (status[x, y] == 1) {
+        cat("O")
+      } else {
+        cat(" ")
+      }
 
-# OOXX 遊戲練習
-# 1. 設計一個兩人的OOXX遊戲。
-# 2. 遊戲玩家分為A、B。A 先手，使用的符號為'O'; B 後手，使用的符號為'X'
-# 3. 遊戲一開始，請輸出以下遊戲提示，並且停留等待玩家A輸入
+      if (y == 3) {
+        cat("\n")
+      } else {
+        cat("|")
+      }
+    }
+    if (x == 3) {
+      cat("**************\n")
+    } else {
+      cat("_____\n")
+    }
+  }
+}
 
-#    Round 0
-#    Now is player A's term!
-#    Player A input(1~9) : 
 
-# 4. 玩家們可以輸入的數字範圍為 1~9，依序對應九宮格的九格位置。
-#    如果輸入錯誤，請抓錯！輸出以下遊戲提示。
+status <- matrix(rep(0, len = 9), nrow = 3)
+#to initialize the game status
 
-#    Invalid input! Please re-enter! 
-#    Round 0
-#    Now is player A's term!
-#    Player A input(1~9) : 
+round <- 0
+#to initialize player A's and B's round
 
-# 5. 待玩家正確輸入完後，請輸出以下遊戲提示(當時的遊戲圖形狀況)，並且等待切換到另外一位玩家等待輸入。
-#    * 提醒，記得增加'Round'次數，以及切換使用者
+key <- "exit"
+FLAG <- FALSE
+#the exit key
 
-#    O| | 
-#    _____
-#     | | 
-#    _____
-#     | | 
-#    **************
-#    Round 1
-#    Now is player B's term!
-#    Player B input(1~9) : 
+while (round < 9 && FLAG == FALSE) {
+  cat("Round ", round, "\n")
+  if (round %% 2 == 0) {
+    #player A's round
+    cat("Now is player A's term!\n")
+    input <- readline(prompt = "Player A input(1~9) : ")
+  } else {
+    #player B's round
+    cat("Now is player B's term!\n")
+    input <- readline(prompt = "Player B input(1~9) : ")
+  }
 
-# 6. 當玩家輸入的位置之前已經有'O'或'X'時，請輸出以下遊戲提示。
+  if (input >= 1 && input <= 9 && as.integer(input) == as.numeric(input)) {
+    #main code
+    input <- as.integer(input)
+    input <- input - 1
+    if (status[(as.integer(input / 3) + 1), ((input + 3) %% 3 + 1)] == 0) {
+      if (round %% 2 == 0) {
+        #fill in the status matrix(O)
+        status[(as.integer(input / 3) + 1), ((input + 3) %% 3 + 1)] <- 1
+      } else {
+        #fill in the status matrix(X)
+        status[(as.integer(input / 3) + 1), ((input + 3) %% 3 + 1)] <- -1
+      }
+      round <- round + 1
+      #all input is valid, round++
+      print_status(status)
+      #print the matrix status
 
-#    This position is already occupied!
-#    Round 1
-#    Now is player B's term!
-#    Player B input(1~9) : 
+      for (x in c(1: 3)) {
+        if (status[x, 1] == status[x, 2] && status[x, 1] == status[x, 3] && status[x, 1] == 1) {
+          cat("Player A wins!!!\n")
+          round <- 10
+          break
+        } else if (status[x, 1] == status[x, 2] && status[x, 1] == status[x, 3] && status[x, 1] == -1) {
+          cat("Player B wins!!!\n")
+          round <- 10
+          break
+        }
+      }
+      for (x in c(1: 3)) {
+        if (status[1, x] == status[2, x] && status[1, x] == status[3, x] && status[1, x] == 1) {
+          cat("Player A wins!!!\n")
+          round <- 10
+          break
+        } else if (status[1, x] == status[2, x] && status[1, x] == status[3, x] && status[1, x] == -1) {
+          cat("Player B wins!!!\n")
+          round <- 10
+          break
+        }
+      }
+      if (status[1, 1] == status[2, 2] && status[1, 1] == status[3, 3] && status[1, 1] == 1) {
+        cat("Player A wins!!!\n")
+        round <- 10
+        break
+      } else if (status[1, 1] == status[2, 2] && status[1, 1] == status[3, 3] && status[1, 1] == -1) {
+        cat("Player B wins!!!\n")
+        round <- 10
+        break
+      }
+      if (status[1, 3] == status[2, 2] && status[1, 3] == status[3, 1] && status[1, 3] == 1) {
+        cat("Player A wins!!!\n")
+        round <- 10
+        break
+      } else if (status[1, 3] == status[2, 2] && status[1, 3] == status[3, 1] && status[1, 3] == -1) {
+        cat("Player B wins!!!\n")
+        round <- 10
+        break
+      }
+      #eight if else statement to check the winner or loser
+      if (round == 9) {
+        cat("End in a draw!!!\n")
+      }
+    } else {
+      cat("This position is already occupied!\n")
+      break
+    }
+  } else if (input == key && FLAG == FALSE) {
+    cat("Bye-Bye!!\n")
+    FLAG <- TRUE
+    break
+  } else {
+    cat("Invalid input! Please re-enter!\n")
+    next
+  }
+}
 
-# 7. 當使用者輸入'exit'時，結束遊戲並印出以下遊戲提示 
-
-#    Bye-Bye!!
-
-# 8. 判斷遊戲結束！當三個直排、橫排、或者斜排時，請輸出以下遊戲提示(當時的遊戲圖形狀況)，並且輸出勝利的玩家。
-
-#    O|X|O
-#    _____
-#    X|O|X
-#    _____
-#    O| | 
-#    **************
-#    Player A wins!!! 
-#
-
-# 9. 當空格皆被填滿且無玩家獲勝時，請輸出以下遊戲提示(當時的遊戲圖形狀況)以及和局遊戲提示。
-
-#   O|O|X
-#   _____
-#   X|X|O
-#   _____
-#   O|X|O
-#   **************
-#   End in a draw!!! 
+while(TRUE) {
+  if (FLAG == FALSE) {
+    input <- readline(prompt = "Please input exit to end the game : ")
+    if (input == key && FLAG == FALSE) {
+      cat("Bye-Bye!!\n")
+      q(save = "no")
+    }
+  } else if (FLAG == TRUE) {
+    q(save = "no")
+  }
+}
