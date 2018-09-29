@@ -1,0 +1,89 @@
+---
+title: "GGplot_hw"
+author: "B05611038"
+date: "2018/9/29"
+output: html_document
+---
+## GGplot2 practice
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+---
+
+### Import Library
+
+```{r library}
+library(ggplot2)
+```
+
+---
+
+### Choose data
+
+```{r data}
+iris
+```
+```
+     Use the simplist dataframe for the example
+```
+
+---
+
+### Sample plot
+
+```{r plot1}
+ggplot(data = iris, aes(x = Sepal.Length)) +
+  geom_bar(fill = "lightblue", colour = "black")
+```
+```
+     We can get the continuous data distribution of Sepal.Length in iris dataframe
+```
+
+```{r plot2}
+ggplot(data = iris, aes(Sepal.Length, Sepal.Width)) +
+  geom_jitter(width = .25, size = 2) +
+  labs(subtitle="Iris: Sepal.Length vs Sepal.Width", y = "Sepal.Width", x = "Sepal.Length", title = "Iris")
+```
+
+```
+     We can let information fill in two axis and make scatterplot
+     However, if we need more information in our plot?
+```
+
+```{r plot3}
+select_species <- iris[iris$Species %in% c("setosa", "versicolor", "virginica"), ]
+#select the different species for our new information
+
+g <- ggplot(iris, aes(Sepal.Length, Sepal.Width)) + 
+  labs(subtitle="Iris: Sepal.Length vs Sepal.Width", title = "Iris")
+
+g + geom_jitter(aes(col = Species))
+```
+
+```
+     From these example, we know that the color is also a axis for our data
+     Is there any more information can we contain in a plot?
+```
+
+```{r plot4}
+select_species <- iris[iris$Species %in% c("setosa", "versicolor", "virginica"), ]
+#select the different species for our new information
+
+g <- ggplot(iris, aes(Sepal.Length, Sepal.Width)) + 
+  labs(subtitle="Iris: Sepal.Length vs Sepal.Width", title = "Iris")
+
+g + geom_jitter(aes(col = Species, size = Petal.Length))
+```
+
+```
+     Now, the size of the point can contain more information of dataframe iris in a plot
+```
+
+---
+
+##Reflection
+
+```
+    Actually, the most useded programming language in my work is Python, it is also a very easy handled language compared to C or C++. In Python, Matplotlib is the commonly used library while we try to visualize our data. While using Matplotlib, I have to set many things to ensure that the figure plotted might be easily observed. It is always a trouble. Now, I have another more easier way to make the figure.
+```
