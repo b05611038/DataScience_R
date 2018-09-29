@@ -110,7 +110,6 @@ while (round < 9 && FLAG == FALSE) {
       }
     } else {
       cat("This position is already occupied!\n")
-      break
     }
   } else if (input == key && FLAG == FALSE) {
     cat("Bye-Bye!!\n")
