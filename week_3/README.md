@@ -17,3 +17,4 @@
 - week_3完成
     - 建立一命名為 `week_3(or task_3, hw_3)`的資料夾。
     - 運用`鳶尾花`的資料及完成**資料視覺化小作品**，並上傳至Github
+    - [資料視覺化小作品連結](https://b05611038.github.io/DataScience_R/week_3/hw_3/GGplot_hw.html) 
