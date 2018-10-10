@@ -1,0 +1,137 @@
+---
+title: "hw4"
+author: "B05611038"
+date: "2018/10/10"
+output: html_document
+---
+
+## Theme: wordclode
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```
+     This the hw4 of R data science cource. The Rmarkdown file contains the basic operation of the wordcloud and web crawling. The websites is the community of dicussing program problem while using pytorch which is a framework of deep learning.
+```
+
+---
+
+### Web crawling
+
+#### Library
+```{r library crawling}
+library(xml2)
+library(rvest)
+```
+```
+     Import the library which is taught in week 2 to grabsurplus space the information of the html websites
+```
+#### Implement
+```{r crawling}
+URL <- "https://discuss.pytorch.org"
+#define the website URL
+
+title <- read_html(URL) %>% html_nodes("a") %>% html_text()
+
+head(title, 10)
+```
+```
+    Now, we have the title in the discussing community and can know that the question other people is confused of. However, there are many space in the text and is hard to read. We will solve this problem in next part.
+```
+
+---
+
+### String process
+
+#### Library
+```{r library string}
+library('stringr')
+```
+```
+    Import the library to clean the line breaking symbol and surplus space
+```
+#### Implement
+```{r string}
+title <-str_replace(title, "\n        ", "")
+title <-str_replace(title, "\n      ", "")
+
+head(title, 10)
+```
+```
+    After some string process, we have the clean data of the title. Now, we can start creating our own wordcloud.
+```
+
+---
+
+### Wordcloud
+
+#### Library
+```{r library wordcloud}
+library("NLP")
+library("tm")
+library("SnowballC")
+library("RColorBrewer")
+library("wordcloud")
+```
+```
+     Import the library for creating wordcloud. The function of these librarys are text mining and text processing. After many process of the many text, we can use the information to create wordcloud.
+```
+
+#### Implement
+```{r wordcloud 1}
+docs <- Corpus(VectorSource(title))
+#load data as corpus
+
+inspect(docs)
+
+dtm <- TermDocumentMatrix(docs)
+m <- as.matrix(dtm)
+v <- sort(rowSums(m),decreasing = TRUE)
+d <- data.frame(word = names(v),freq = v)
+#to check the word frequency in the docs
+head(d, 10)
+```
+```
+     After the fisrt part of the program, we know the word frequency in our text. Then we can start filter out the word that we don't want it to appear in wordcloud.
+```
+```{r wordcloud 2}
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+docs <- tm_map(docs, removeNumbers)
+#remove all numbers in the docs
+docs <- tm_map(docs, removePunctuation)
+#remove extra white space
+docs <- tm_map(docs, toSpace, 'Uncategorized')
+docs <- tm_map(docs, toSpace, 'uncategorized')
+docs <- tm_map(docs, toSpace, 'the')
+docs <- tm_map(docs, toSpace, 'With')
+docs <- tm_map(docs, toSpace, 'with')
+docs <- tm_map(docs, toSpace, 'How')
+docs <- tm_map(docs, toSpace, 'how')
+#delete the stop word
+
+new.dtm <- TermDocumentMatrix(docs)
+new.m <- as.matrix(new.dtm)
+new.v <- sort(rowSums(new.m),decreasing = TRUE)
+new.d <- data.frame(word = names(new.v),freq = new.v)
+#to check the word frequency in the docs
+head(new.d, 10)
+```
+```
+    Now, we can see that there are not any surplus word in our document.
+```
+```{r wordcloud 3}
+set.seed(1111)
+wordcloud(words = new.d$word, freq = new.d$freq, min.freq = 1, 
+          max.words=200, random.order=FALSE, rot.per=0.35, 
+          colors=brewer.pal(8, "Dark2"))
+```
+```
+     Finally, we get the wordcloud of the website title.
+```
+
+---
+
+### Feedback
+```
+     This homework makes me practice web crawling again, and let me know, it is really not a simple work. However, almost all of information is on the Internet. We have to be familiar with web crawling if we want to work on data science avoidablely. Wordcloud is a intuitive tools for people on text mining. It can plot the words in bigger size because of its high frequency. The function of the tool is very convenience and can analyze languages in simple way.
+```
