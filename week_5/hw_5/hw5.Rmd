@@ -178,9 +178,7 @@ for(x in 1:nrow(dtm)) {
 findZeroId = as.matrix(apply(doc.tfidf, 1, sum))
 tfidfnn = doc.tfidf[-which(findZeroId == 0),]
 
-tfidfnn
-
-write.csv(tfidfnn, "show.csv")
+write.csv(doc.tfidf, "show.csv")
 ```
 
 ```
