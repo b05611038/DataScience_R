@@ -17,4 +17,5 @@
 
 - week_5完成
     - 建立一命名為 week_5(or task_5, hw_5)的資料夾。
-    - Rmd趕工中
+    - 運用網擄爬蟲，實現tf-idf的練習
+    - [Tf-idf Rmd連結](https://b05611038.github.io/DataScience_R/week_5/hw_5/hw5.html)

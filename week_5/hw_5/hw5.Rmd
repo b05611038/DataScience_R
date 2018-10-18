@@ -1,3 +1,23 @@
+---
+title: "hw5"
+author: "B05611038"
+date: "2018/10/18"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 主題：動畫評論tf-idf與視覺化
+
+這次是用網路爬蟲把不同話數的評論當作一個文本，嘗試以動畫「四月是你的謊言」的巴哈討論區為例，試著對各話的評論找尋一些蛛絲馬跡。
+
+---
+
+### 網路爬蟲
+
+```
 library('xml2')
 library('rvest')
 #library of web crawling
@@ -82,15 +102,27 @@ for (i in c(1: length(index))) {
     page <- page + 1
   }
   #the loop will end in the grab all page
-  write.table(content, filename, sep = "")
-  cat("Output file: ", filename, " success\n")
+  #write.table(content, filename, sep = "")
+  #cat("Output file: ", filename, " success\n")
   content.temp <- content[1]
   for (x in c(2: length(content))) {
     content.temp <- paste(content.temp, content[x], sep = "")
   }
   data <- c(data, content.temp)
 }
+```
 
+```
+    這段程式其實是抓取討論區中各個不同的話的所有評論當作一個文本，並且存成一個.txt檔，因為是從最大的文章列表進行抓取，針對「集中討論區」也就是動畫各話的評論進行抓取，為了之後處理tf-idf的方便性，我們預先將所有不同的評論存成一個string，因為四月是你的謊言總共有22話 + 1話的OAD，所以至少會因為「集中討論區」的標題抓取抓到23個文本
+```
+
+---
+
+### Tf-idf
+
+因為資料量也不小，所以就不在Rmd中顯示了，若要看結果的話，請去下載show.csv檔
+
+```
 library('NLP')
 library('tm')
 library('SnowballC')
@@ -131,8 +163,8 @@ DF <- tidy(m)
 N = dtm$ncol
 tf <- apply(dtm, 2, sum)
 idfCal <- function(word_doc)
-{ 
-  log2( N / nnzero(word_doc) ) 
+{
+  log2( N / nnzero(word_doc) )
 }
 idf <- apply(dtm, 1, idfCal)
 
@@ -144,6 +176,19 @@ for(x in 1:nrow(dtm)) {
 }
 
 findZeroId = as.matrix(apply(doc.tfidf, 1, sum))
-#tfidfnn = doc.tfidf[-which(findZeroId == 0),]
+tfidfnn = doc.tfidf[-which(findZeroId == 0),]
 
-write.csv(doc.tfidf, "show.csv")
+tfidfnn
+
+write.csv(tfidfnn, "show.csv")
+```
+
+```
+    這段就是根據不同文本，先將所有文本合成一個巨大的文本進行斷詞，可以得出約30000個不同的詞，也就是我們平常在說的term，並且根據tf-idf，也就是高頻率的詞在文本中可以認為是重要的，但是像是「的」、「都」這種高頻率出現在中文的字就會被過度放大，這就是tf的部分，而所謂idf就是指這些常常使用的字在各個文本出現的頻率，將這兩個東西相乘之後，就可以得到一個兩個不同概念所成的拮抗的數值，而tf-idf值越高代表在這個文本中這個字越重要，雖然這是一個根據簡單機率算出來的一個很模糊的值，但這的確在資料量夠大的時候，可以有更高的機率看出一個詞的重要性。
+```
+
+---
+
+### 結語
+
+其實這次感覺還比較像爬蟲練習XD，我個人認為tf-idf的代表意義實在太粗糙了，但是這次網路爬蟲真的練習到了不少，怎麼從一堆link中探詢子分頁的關係，之後就成功抓取自己要的資料了，可是其實觀察這個很大的csv還是很難得出結果，只能認為評論的詞都太分散了。
