@@ -47,4 +47,4 @@ plot <- d[1: 50, 1: 2]
 plot$word <- factor(plot$word, levels = plot$word[order(- plot$freq)])
 ggplot(plot, aes(x = word, y = freq)) + 
   geom_bar(stat="identity", width=.5, fill="tomato3") + 
-  theme(text=element_text(family="黑體-繁 中黑", size=6)))
+  theme(text=element_text(family="黑體-繁 中黑", size=6))

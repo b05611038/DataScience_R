@@ -127,61 +127,73 @@ server <- function(input, output) {
     if (input$wc == novel.tag[2]) {
       return(list(
         src = paste("wordcloud/", novel.tag[2], ".png", sep = ""),
+        height = 500,
         contentType = "image/png",
         alt = novel.tag[2]
       ))} else if (input$wc == novel.tag[3]) {
         return(list(
           src = paste("wordcloud/", novel.tag[3], ".png", sep = ""),
+          height = 500,
           contentType = "image/png",
           alt = novel.tag[3]
       ))} else if (input$wc == novel.tag[4]) {
         return(list(
           src = paste("wordcloud/", novel.tag[4], ".png", sep = ""),
+          height = 500,
           contentType = "image/png",
           alt = novel.tag[4]
       ))} else if (input$wc == novel.tag[5]) {
         return(list(
           src = paste("wordcloud/", novel.tag[5], ".png", sep = ""),
+          height = 500,
           contentType = "image/png",
           alt = novel.tag[5]
       ))} else if (input$wc == novel.tag[6]) {
         return(list(
           src = paste("wordcloud/", novel.tag[6], ".png", sep = ""),
+          height = 500,
           contentType = "image/png",
           alt = novel.tag[6]
       ))} else if (input$wc == novel.tag[7]) {
         return(list(
           src = paste("wordcloud/", novel.tag[7], ".png", sep = ""),
+          height = 500,
           contentType = "image/png",
           alt = novel.tag[7]
       ))} else if (input$wc == novel.tag[8]) {
         return(list(
           src = paste("wordcloud/", novel.tag[8], ".png", sep = ""),
+          height = 500,
           contentType = "image/png",
           alt = novel.tag[8]
       ))} else if (input$wc == novel.tag[9]) {
         return(list(
           src = paste("wordcloud/", novel.tag[9], ".png", sep = ""),
+          height = 500,
           contentType = "image/png",
          alt = novel.tag[9]
       ))} else if (input$wc == novel.tag[10]) {
         return(list(
           src = paste("wordcloud/", novel.tag[10], ".png", sep = ""),
+          height = 500,
           contentType = "image/png",
           alt = novel.tag[10]
       ))} else if (input$wc == novel.tag[11]) {
         return(list(
           src = paste("wordcloud/", novel.tag[11], ".png", sep = ""),
+          height = 500,
           contentType = "image/png",
           alt = novel.tag[11]
       ))} else if (input$wc == novel.tag[12]) {
         return(list(
           src = paste("wordcloud/", novel.tag[12], ".png", sep = ""),
+          height = 500,
           contentType = "image/png",
           alt = novel.tag[12]
       ))} else if (input$wc == novel.tag[13]) {
         return(list(
           src = paste("wordcloud/", novel.tag[13], ".png", sep = ""),
+          height = 500,
           contentType = "image/png",
           alt = novel.tag[13]
       ))} else {
@@ -199,61 +211,73 @@ server <- function(input, output) {
     if (input$wc2 == novel.tag[2]) {
       return(list(
         src = paste("plot_bar/", novel.tag[2], ".png", sep = ""),
+        height = 500,
         contentType = "image/png",
         alt = novel.tag[2]
       ))} else if (input$wc2 == novel.tag[3]) {
         return(list(
           src = paste("plot_bar/", novel.tag[3], ".png", sep = ""),
+          height = 500,
           contentType = "image/png",
           alt = novel.tag[3]
       ))} else if (input$wc2 == novel.tag[4]) {
         return(list(
           src = paste("plot_bar/", novel.tag[4], ".png", sep = ""),
+          height = 500,
           contentType = "image/png",
           alt = novel.tag[4]
       ))} else if (input$wc2 == novel.tag[5]) {
         return(list(
           src = paste("plot_bar/", novel.tag[5], ".png", sep = ""),
+          height = 500,
           contentType = "image/png",
           alt = novel.tag[5]
       ))} else if (input$wc2 == novel.tag[6]) {
         return(list(
           src = paste("plot_bar/", novel.tag[6], ".png", sep = ""),
+          height = 500,
           contentType = "image/png",
           alt = novel.tag[6]
       ))} else if (input$wc2 == novel.tag[7]) {
         return(list(
           src = paste("plot_bar/", novel.tag[7], ".png", sep = ""),
+          height = 500,
           contentType = "image/png",
           alt = novel.tag[7]
       ))} else if (input$wc2 == novel.tag[8]) {
         return(list(
           src = paste("plot_bar/", novel.tag[8], ".png", sep = ""),
+          height = 500,
           contentType = "image/png",
           alt = novel.tag[8]
       ))} else if (input$wc2 == novel.tag[9]) {
         return(list(
           src = paste("plot_bar/", novel.tag[9], ".png", sep = ""),
+          height = 500,
           contentType = "image/png",
           alt = novel.tag[9]
       ))} else if (input$wc2 == novel.tag[10]) {
         return(list(
           src = paste("plot_bar/", novel.tag[10], ".png", sep = ""),
+          height = 500,
           contentType = "image/png",
           alt = novel.tag[10]
       ))} else if (input$wc2 == novel.tag[11]) {
         return(list(
           src = paste("plot_bar/", novel.tag[11], ".png", sep = ""),
+          height = 500,
           contentType = "image/png",
           alt = novel.tag[11]
       ))} else if (input$wc2 == novel.tag[12]) {
         return(list(
           src = paste("plot_bar/", novel.tag[12], ".png", sep = ""),
+          height = 500,
           contentType = "image/png",
           alt = novel.tag[12]
       ))} else if (input$wc2 == novel.tag[13]) {
         return(list(
           src = paste("plot_bar/", novel.tag[13], ".png", sep = ""),
+          height = 500,
           contentType = "image/png",
           alt = novel.tag[13]
       ))} else {
@@ -267,6 +291,7 @@ server <- function(input, output) {
   output$image3 <- renderImage({
     return(list(
       src = "image/word_weight.png",
+      height = 750,
       contentType = "image/png",
       alt = "word_weight"
     ))
@@ -275,6 +300,7 @@ server <- function(input, output) {
   output$image4 <- renderImage({
     return(list(
       src = "image/pca.png",
+      height = 750,
       contentType = "image/png",
       alt = "pca"
     ))
@@ -283,6 +309,7 @@ server <- function(input, output) {
   output$image5 <- renderImage({
     return(list(
       src = "image/icon.png",
+      height = 300,
       contentType = "image/png",
       alt = "icon"
     ))

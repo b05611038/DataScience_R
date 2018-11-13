@@ -1,0 +1,263 @@
+---
+title: "hw6&7&8"
+author: "B05611038"
+date: "2018/11/13"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## 主題：金庸長篇小說開頭分析
+
+這次是一個三個禮拜的大作業，主要是要嘗試實作一個屬於自己的小project，活用之前上課的工具，並且製作成R shiny的網頁互動模式，而這次我選擇的主題是金庸的長篇小說，可以組成「飛雪連天射白鹿，笑書神俠倚碧鴛」的長篇小說們的開頭分析。
+
+---
+
+### 資料取得：網路爬蟲
+
+```
+金庸的小說雖然是出版本，但是其實網路上也查得到他的小說內容，而且是免費的，所以我們就使用R的網路爬蟲將我們的資料抓下來。
+```
+
+```{r web_crawling}
+library('xml2')
+library('rvest')
+#library of web crawling
+library('stringr')
+#library of string process
+
+URL.top <- "http://www.millionbook.net/wx/j/jingyong/index.html"
+URL.part1 <- "http://www.millionbook.net/wx/j/jingyong/"
+folder.path <- "data/"
+
+book.title <- read_html(URL.top) %>% html_nodes("a") %>% html_text()
+book.link <- read_html(URL.top) %>% html_nodes("a") %>% xml_attr("href")
+
+#to grab all novel of Louis Cha Jing-yong
+content <- c()
+for (i in c(5: 18)) {
+  book.URL <- paste(URL.part1, book.link[i], sep = "")
+
+  text <- ""
+  if (i == 10 || i == 18) {
+    text <- read_html(book.URL) %>% html_nodes(".tt2") %>% html_text()
+  } else {
+    chapter.title <- read_html(book.URL) %>% html_nodes("a") %>% html_text()
+    chapter.link <- read_html(book.URL) %>% html_nodes("a") %>% xml_attr("href")
+    link.first <- str_replace(book.URL, "index.html", "")
+    for (j in c(4: 4)) {
+      grab.link <- paste(link.first, chapter.link[j], sep = "")
+      text.temp <- read_html(grab.link) %>% html_nodes(".tt2") %>% html_text()
+
+      text <- paste(text, text.temp, sep = "")
+      filename <- paste(book.title[i], "ch1.txt", sep = "")
+      path <- paste(folder.path, filename, sep = "")
+      #write.table(text, file = path, sep = "", col.names = F, row.names = F)
+      content <- c(content, text)
+      cat("Grabing file: ", filename, "success\n")
+    }
+  }
+}
+```
+
+```
+其實這一段也可以拿來抓全文，只要將內迴圈的for (j in c(4: 4))改成for (j in c(4: length(chapter.link)))即可，至於第10跟18個index，因為白馬嘯西風跟鴛鴦刀其實沒有章節之分，所以雖然可以抓下來，但不會在我們的分析裡面。
+```
+### 字數長條圖
+
+```
+把常用的無意義字刪除之後，就可以用之前教的ggplot的繪圖套件幫我們做出一個字數的長條圖，這邊我們用飛狐外傳ch1當作範例。
+```
+
+```{r bar_plot}
+library('NLP')
+library('tm')
+library('SnowballC')
+library('RColorBrewer')
+library('jiebaRD')
+library('jiebaR')
+library('slam')
+library('Matrix')
+library('tidytext')
+library('NLP')
+library('ggplot2')
+#library of text mining
+
+cc <- worker()
+token = function(d){
+  unlist(segment(d[[1]], cc))
+}
+toSpace <- content_transformer(function(x, pattern) {
+  return (gsub(pattern, " ", x))
+})
+
+docs <- Corpus(VectorSource(token(content[1])))
+
+docs <- tm_map(docs, removePunctuation)
+docs <- tm_map(docs, removeNumbers)
+docs <- tm_map(docs, stripWhitespace)
+
+docs <- tm_map(docs, toSpace, '的')
+docs <- tm_map(docs, toSpace, '了')
+docs <- tm_map(docs, toSpace, '這')
+docs <- tm_map(docs, toSpace, '是')
+docs <- tm_map(docs, toSpace, '你')
+docs <- tm_map(docs, toSpace, '我')
+docs <- tm_map(docs, toSpace, '他')
+docs <- tm_map(docs, toSpace, '這')
+docs <- tm_map(docs, toSpace, '那')
+docs <- tm_map(docs, toSpace, '在')
+
+tdm <- TermDocumentMatrix(docs)
+m <- as.matrix(tdm)
+v <- sort(rowSums(m), decreasing = TRUE)
+d <- data.frame(word = names(v), freq = v)
+
+plot <- d[1: 50, 1: 2]
+plot$word <- factor(plot$word, levels = plot$word[order(- plot$freq)])
+ggplot(plot, aes(x = word, y = freq)) +
+  geom_bar(stat="identity", width=.5, fill="tomato3") +
+  theme(text=element_text(family="黑體-繁 中黑", size=6))
+```
+
+```
+這裡我們可以看出雪山飛狐ch1的字詞頻率長條圖，而我們可以簡單的得到一些關於字詞頻率的資訊在這個長條圖中。
+```
+
+---
+
+### 文字雲
+
+```
+這邊主要使用的是wordcloud2的套件包，因為這個套件包比較不用擔心有關於中文顯示不出來的問題
+```
+
+```{r wordcloud}
+library('wordcloud2')
+
+wordcloud2(d)
+```
+
+---
+
+### tfidf分析
+
+```
+我們知道說，若是只看字詞頻率的話，那麼一些無關緊要但是頻繁出現在文本之中的字詞會影響我們的分析結果，所以tfidf的分析方式才會出現，藉由比較各個文本中都是頻繁字詞的term，適當的減少這些字詞的分數，而畫成圖也比較清楚，所以會由圖的方式來呈現。
+```
+
+```{r tfidf}
+docs <- Corpus(VectorSource(token(content[1: 12])))
+
+docs <- tm_map(docs, removePunctuation)
+docs <- tm_map(docs, removeNumbers)
+docs <- tm_map(docs, stripWhitespace)
+
+seg = lapply(docs, token)
+
+d.corpus <- Corpus(VectorSource(seg))
+
+d.corpus <- tm_map(d.corpus, toSpace, '的')
+d.corpus <- tm_map(d.corpus, toSpace, '了')
+d.corpus <- tm_map(d.corpus, toSpace, '這')
+d.corpus <- tm_map(d.corpus, toSpace, '是')
+d.corpus <- tm_map(d.corpus, toSpace, '你')
+d.corpus <- tm_map(d.corpus, toSpace, '我')
+d.corpus <- tm_map(d.corpus, toSpace, '他')
+d.corpus <- tm_map(d.corpus, toSpace, '這')
+d.corpus <- tm_map(d.corpus, toSpace, '那')
+d.corpus <- tm_map(d.corpus, toSpace, '在')
+
+tdm <- TermDocumentMatrix(d.corpus)
+tf <- as.matrix(tdm)
+DF <- tidy(tf)
+
+# tf-idf computation
+N = tdm$ncol
+tf <- apply(tdm, 2, sum)
+idfCal <- function(word_doc)
+{
+  log2( N / nnzero(word_doc) )
+}
+idf <- apply(tdm, 1, idfCal)
+
+doc.tfidf <- as.matrix(tdm)
+for(x in 1:nrow(tdm))
+{
+  for(y in 1:ncol(tdm))
+  {
+    doc.tfidf[x,y] <- (doc.tfidf[x,y] / tf[y]) * idf[x]
+  }
+}
+
+findZeroId = as.matrix(apply(doc.tfidf, 1, sum))
+tfidfnn = doc.tfidf[-which(findZeroId == 0),]
+```
+
+```
+當我們算完tf-idf的各個term的權重之後，我們就能透過這一個大的matrix進行繪圖。
+```
+
+```{r tfidf_bar}
+tfidfnn <- read.csv("~/Project/Datascience_R/week_6&7&8/tfidf.csv")
+
+tfidf <- as.matrix(tfidfnn[, 2: 13])
+rownames(tfidf) <- tfidfnn[, 1]
+
+v <- sort(rowSums(tfidf), decreasing = TRUE)
+d <- data.frame(word = names(v),score = v)
+
+plot <- d[1: 100, 1: 2]
+plot$word <- factor(plot$word, levels = plot$word[order(- plot$score)])
+
+ggplot(plot, aes(x = word, y = score)) +
+  geom_bar(stat="identity", width=.5, fill="blue") +
+  theme(text=element_text(family="黑體-繁 中黑", size = 4))
+```
+
+```
+我們可以由此視覺化讓我們更了解每一個字詞在各個不同的書的開頭中的狀況，可以看出姓氏、物品、地名的比重其實都偏高，但是前面分數高的都幾乎是人名，由此可知其實各個不同詞的詞頻在金庸的長篇小說開頭其實概略上看很難看出個所以然。
+```
+
+---
+
+### PCA
+
+```
+我們可以藉由PCA將tfidf的資料進行降維，並且用ggplot的套件包將我們的點畫在PC1和PC2的平面，讓我們看看說每一個不同的小說詞頻在降維之後的關係。
+```
+
+```{r pca}
+tfidf <- as.matrix(tfidfnn[, 2: 13])
+rownames(tfidf) <- tfidfnn[, 1]
+
+colnames(tfidf) <- c("飛狐外傳", "雪山飛狐", "連城訣", "天龍八部", "射鵰英雄傳", "鹿鼎記", "笑傲江湖", "書劍恩仇錄", "神雕俠侶", "俠客行", "倚天屠龍記", "碧血劍")
+
+pca <- prcomp(t(tfidf), scale = T)
+
+plot <- pca$x[, 1: 2]
+plot <- as.data.frame(plot)
+
+ggplot(plot, aes(x = PC1, y = PC2)) +
+  geom_point() +
+   geom_text(label = rownames(plot), family = "黑體-繁 中黑", size = 6)
+```
+
+```
+由初步的結果可以看出，鹿鼎記、倚天屠龍記和射雕英雄傳相對於其他長篇的開頭，他們的詞頻模式可能相差比較遠，更詳細的分析其實可以在看過小說之後再探討。
+```
+
+---
+
+### 結語
+
+```
+我在這次的project中沒有使用到k-means等等聚群的分析，這是一位我認為小說開頭詞頻
+的分析其實沒有什麼好進行非監督式的聚群的，畢竟他們的相似程度藉由更可靠的PCA直接觀察可能還會有比較好的結果。
+
+這次是一個算是把前幾個禮拜交的東西都實作的小project，其實也可以看出我們在之前的課程已經學到很多的東西了，雖然詞頻的部分在文本分析中其實是很不精確的，但是也可以看出一些特別的模式，希望之後要是有機會有更好的分析方式的話，可以對這些部分進行更詳細的分析。
+
+最後，金庸爺爺享耆壽94歲，非常感謝您寫出這麼夢幻、有趣的武俠愛恨情仇，各個故事在我枯燥的國中生活中其實都佔有很重要的部分，雖然您早已封筆，悲痛的死訊其實不帶有遺憾，畢竟故事早已完成，但是一代巨匠的逝世，總是令人無限惆悵。
+```
