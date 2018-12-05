@@ -5,8 +5,8 @@ account: b05611038
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 565517
-bundleId: 1697311
+bundleId: 1697440
 url: https://b05611038.shinyapps.io/novel_beginning_analysis/
-when: 1542072508.27876
+when: 1542078228.7593
 asMultiple: FALSE
 asStatic: FALSE

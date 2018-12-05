@@ -36,7 +36,7 @@ ui <- navbarPage(
             但是我也想看看當這些小說不是以我們熟悉的「文字」的形式出現在我們面前時，
             我們會不會對這些小說有不同的認識呢！"),br(),
     tags$h5("資料來源：龍騰世紀書庫, http://www.millionbook.net/wx/j/jingyong/index.html"),
-    tags$h5("github:")
+    tags$h5("github參考:https://github.com/b05611038/DataScience_R/tree/master/week_6%267%268")
   ),
 
   tabPanel(
