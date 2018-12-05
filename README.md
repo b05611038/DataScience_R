@@ -21,3 +21,4 @@
 | 10/10  |    4    |     https://github.com/b05611038/DataScience_R/tree/master/week_4     |
 | 10/18  |    5    |     https://github.com/b05611038/DataScience_R/tree/master/week_5     |
 | 11/14  |  6,7,8  | https://github.com/b05611038/DataScience_R/tree/master/week_6%267%268 |
+| 12/5   |    12   |    https://github.com/b05611038/DataScience_R/tree/master/week_12     |
